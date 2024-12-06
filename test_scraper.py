@@ -36,7 +36,7 @@ def test_scraper_results(query, limit, scraper, headless):
 
 
 # Define the query for testing
-test_query = "test"  
+test_query = "test2"  
 
 # Example of how to use different scrapers:
 # Uncomment and modify the following lines to test different scrapers
@@ -51,7 +51,7 @@ test_query = "test"
 
 from scrapers.duckduckgo_de import *
 se = Scraping()
-test_scraper_results(test_query, 10, se, False)
+test_scraper_results(test_query, 11, se, False)
 
 # from scrapers.ecosia_de import *
 # se = Scraping()
