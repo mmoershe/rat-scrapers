@@ -10,3 +10,5 @@
 **.DS_Store
 !empty.txt
 README.md
+\venv
+\.venv
