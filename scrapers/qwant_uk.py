@@ -176,34 +176,30 @@ def run(query, limit, scraping, headless):
 
         search_results = get_search_results(driver, page)
         results_number = len(search_results)
-        continue_scraping = False #Initialize scraping
+        continue_scraping = True #Initialize scraping
 
         # Loop through pages until limit is reached or CAPTCHA appears
         while results_number < limit and continue_scraping:
+            # Qwant wont generate endless results for our query but will eventually show the following text: 'The following results are probably not relevant, please rephrase your query.'
+            # I have decided to let it crash on purpose in this case and return -1. Another approach would be to only return the results that have been queried until this point, which would result in an unexpectedly low amount of results in the return-value.
             if check_captcha(driver): 
                 search_results = -1
                 break
 
             time.sleep(random.randint(2, 5))
             page += 1
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             try:
-                next_page_url = f"https://www.ecosia.org/search?method=index&q={query}&p={page}" #Next page URL
-                print(next_page_url)
-                driver.get(next_page_url)
-                extract_search_results = get_search_results(driver, page)
-                print(f"Results extracted: {len(extract_search_results)}")
-
-                if extract_search_results:
-                    print("Appending results.")
-                    search_results += extract_search_results
-                    search_results = remove_duplicates(search_results)
-                    results_number = len(search_results)
-                else:
-                    continue_scraping = False
-                    search_results = -1
+                next_button = driver.find_element(By.CSS_SELECTOR, "[data-testid='buttonShowMore']")
+                next_button.click()
+                time.sleep(random.randint(2, 5))
+                search_results += get_search_results(driver, page)
+                search_results = remove_duplicates(search_results)
+                results_number = len(search_results)
             except Exception as e:
                 print(f"Failed to get next page: {e}")
-                continue_scraping = False
+                search_results = -1
+                break
 
         driver.quit()
         return search_results
