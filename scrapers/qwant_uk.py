@@ -47,7 +47,7 @@ def run(query, limit, scraping, headless):
 
         # Initialize variables
         results_number = 0 #Initialize number of search results
-        page = -1 #Initialize SERP page number
+        page = 1 #Initialize SERP page number
         search_results = [] #Initialize list of search results
         
         # Custom function to scrape search results
@@ -96,7 +96,7 @@ def run(query, limit, scraping, headless):
                     url_elem = result.find("a")
                     if url_elem:
                         url = url_elem.attrs['href']
-                        if "bing." in url:
+                        if "fdn.qwant.com" in url:
                             url = scraping.get_real_url(url)
                         result_url = url
                 except:
